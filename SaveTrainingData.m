@@ -1,12 +1,16 @@
 function SaveTrainingData(all_ftypes, train_inds, s_fn)
-% fmat = VecAllFeatures(all_ftypes, W, H)
+% SaveTrainingData(all_ftypes, train_inds, s_fn)
 % Loads images from directory and stores their integral images.
 %
 % Input     Size/Type   Comment
 % dirname   string      Path to directory.
-% ni        1 x 1       Optional argument. Number of images to be loaded. 
-%                       If not specified all the images in the directory
-%                       will be loaded.
+% all_ftypes nf x 5     all_ftypes have the columns 
+%                       (type, x, y, w, h) where type is the feature type; 
+%                       x and y are starting position for the feature 
+%                       (upper left corner) and h and w denote the height 
+%                       and width.
+% train_inds ni x 1     Indices of images to be used in training.
+% s_fn      string      Name and path of savefile (.mat).
 % 
 % Output is saved in the file specified by s_fn
 % Output    Size/Type   Comment
@@ -40,13 +44,13 @@ nnonfaces = size(ii_ims, 2) - nfaces;
 ys = ones(nfaces+nnonfaces, 1);
 ys((nfaces+1):nnonfaces) = -1;
 
-% 4. Compute all_ftypes with EnumAllFeatures
-all_ftypes = EnumAllFeatures(W,H);
+% % 4. Compute all_ftypes with EnumAllFeatures
+% all_ftypes = EnumAllFeatures(W,H);
 
 % 5. Compute fmat with VecAllFeatures
 fmat = VecAllFeatures(all_ftypes, W, H);
 
 % 6. Save to file
-save(s_fn, 'ii_ims', 'ys', 'fmat', 'all_ftypes', 'W', 'H');
+save(s_fn, 'ii_ims', 'ys', 'fmat', 'all_ftypes', 'W', 'H', 'train_inds');
 
 end
