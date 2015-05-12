@@ -9,8 +9,10 @@ TData = load('training_data.mat');
 ftype = TData.fmat(12028,:);
 train_inds = TData.train_inds;
 ii_ims = TData.ii_ims(:,train_inds);
+% ii_ims = TData.ii_ims;
 fs = ftype*ii_ims;
 ys = TData.ys(train_inds);
+% ys = TData.ys;
 
 % Calculate initial weights
 n = numel(ys);
@@ -29,12 +31,14 @@ ind_n = find(ys < 0);
 [y_p, x_p] = hist(fs(ind_p));
 [y_n, x_n] = hist(fs(ind_n));
 
-plot(x_p, y_p, 'b')
+y_p = y_p/sum(y_p);
+y_n = y_n/sum(y_n);
+p1 = plot(x_p, y_p, 'b');
 hold on
 plot(x_p, y_p, 'bo')
 
-plot(x_n, y_n, 'r')
+p2 = plot(x_n, y_n, 'r');
 plot(x_n, y_n, 'ro')
 
-
+legend([p1, p2], {'faces', 'non-faces'});
 plot([theta theta], ylim, 'k')
