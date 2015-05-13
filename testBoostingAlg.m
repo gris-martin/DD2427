@@ -14,14 +14,18 @@ Cparams = BoostingAlg(TData, T, t_inds);
 %%
 
 for i = 1:T
-    subplot(1,T,i);
-    fpic = MakeFeaturePic(TData.all_ftypes(Cparams.Thetas(i,1), :), 19, 19);
-    imagesc(fpic); colormap gray; axis equal;
+%     subplot(1,T,i);
+    fpic{i} = MakeFeaturePic(TData.all_ftypes(Cparams.Thetas(i,1), :), 19, 19);
+%     imagesc(fpic); colormap gray; axis equal;
 end
 
-figure;
+
+
+% figure;
 cpic = MakeClassifierPic(TData.all_ftypes, Cparams.Thetas(:,1), Cparams.alphas, Cparams.Thetas(:,3), 19, 19);
-imagesc(cpic); colormap gray; axis equal;
+% imagesc(cpic); colormap gray; axis equal;
+fpic{T+1} = cpic;
+montage(fpic)
 
 %%
 eps = 1e-6;

@@ -20,3 +20,13 @@ T = dinfo7.T;
 Cparams = BoostingAlg(TData, T);
 sum(abs(dinfo7.alphas - Cparams.alphas)>eps)
 sum(abs(dinfo7.Thetas(:)- Cparams.Thetas(:))>eps)
+
+%% Visualization
+for i = 1:T
+    fpic{i} = MakeFeaturePic(TData.all_ftypes(Cparams.Thetas(i,1), :), 19, 19);
+end
+
+fpic{T+1} = MakeClassifierPic(TData.all_ftypes, Cparams.Thetas(:,1), ...
+    Cparams.alphas, Cparams.Thetas(:,3), 19, 19);
+
+montage(fpic, 'Size', [1,T+1]);
