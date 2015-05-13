@@ -28,9 +28,9 @@ if nargin < 3
    t_inds = 1:size(TData.fmat, 1);
 end
 
-ii_ims = TData.ii_ims;
+ii_ims = TData.ii_ims(:,TData.train_inds);
 fmat = TData.fmat(t_inds,:);
-ys = TData.ys;
+ys = TData.ys(TData.train_inds);
 
 % Calculate initial weights
 n = numel(ys);
@@ -47,14 +47,16 @@ p = zeros(nfeat, 1);
 Thetas = zeros(T, 3);
 alphas = zeros(T, 1);
 
+fs = fmat*ii_ims;
+
 for t = 1:T
     ws = ws/sum(ws); % Normalization
     
     % Train weak classifiers
     for f = 1:nfeat
-        ftype = fmat(f,:);
-        fs = ftype*ii_ims;
-        [theta(f), p(f), errs(f)] = LearnWeakClassifier(ws, fs', ys);
+%         ftype = fmat(f,:);
+%         fs = ftype*ii_ims;
+        [theta(f), p(f), errs(f)] = LearnWeakClassifier(ws, fs(f,:)', ys);
     end
     
     % Coose weak classifiers with lowest error and store parameters

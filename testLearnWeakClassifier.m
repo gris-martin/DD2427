@@ -6,11 +6,11 @@ clc
 
 % Load some data
 TData = load('training_data.mat');
-ftype = TData.fmat(12028,:);
+ftype_vec = TData.fmat(12028,:);
 train_inds = TData.train_inds;
 ii_ims = TData.ii_ims(:,train_inds);
 % ii_ims = TData.ii_ims;
-fs = ftype*ii_ims;
+fs = ftype_vec*ii_ims;
 ys = TData.ys(train_inds);
 % ys = TData.ys;
 
@@ -42,3 +42,6 @@ plot(x_n, y_n, 'ro')
 
 legend([p1, p2], {'faces', 'non-faces'});
 plot([theta theta], ylim, 'k')
+
+xlabel('Feature response (fs)');
+ylabel('Frequency');

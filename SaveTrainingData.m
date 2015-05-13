@@ -41,7 +41,7 @@ nnonfaces = size(ii_ims, 2) - nfaces;
     
 % 3. Create ground-truth labels ys
 ys = ones(nfaces+nnonfaces, 1);
-ys((nfaces+1):nnonfaces) = -1;
+ys((nfaces+1):nfaces+nnonfaces) = -1;
 
 % % 4. Compute all_ftypes with EnumAllFeatures
 % all_ftypes = EnumAllFeatures(W,H);

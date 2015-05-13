@@ -13,7 +13,6 @@ function all_ftypes = EnumAllFeatures(W,H)
 all_ftypes = zeros(W^2*H^2,5);
 
 
-
 cf = 0;
 
 type = 1;
