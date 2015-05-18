@@ -3,7 +3,6 @@ clear
 clc
 
 % Test the BoostingAlg function
-
 TData = load('training_data.mat');
 T = 3;
 t_inds = 1:1000;
