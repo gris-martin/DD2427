@@ -16,11 +16,11 @@ function [theta, p, err] = LearnWeakClassifier(ws, fs, ys)
 % err       1 x 1       Error value of classifier when applied to training
 %                       data.
 
-% Calculate means
+% Calculate weighted means
 mu_p = sum(ws.*fs.*(1+ys))/sum(ws.*(1+ys));
 mu_n = sum(ws.*fs.*(1-ys))/sum(ws.*(1-ys));
 
-% Claculate threshold theta (mean of means)
+% Claculate threshold theta (middle of means)
 theta = (mu_p + mu_n)/2;
 
 % Calculate error

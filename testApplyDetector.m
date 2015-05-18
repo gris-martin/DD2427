@@ -12,5 +12,5 @@ Cparams = BoostingAlg(TData, T);
 
 %% Apply detector
 [~, ii_im] = LoadImage('TrainingImages/FACES/face00001.bmp');
-scs = ApplyDetector(Cparams, [ii_im(:), ii_im(:)]);
+scs = ApplyDetector(Cparams, [ii_im(:)]);
 

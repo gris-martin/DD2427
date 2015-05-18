@@ -24,6 +24,13 @@ function scs = ApplyDetector(Cparams, ii_ims)
 % Output    Size/Type   Comment
 % scs       ni x 1      Classification score for each image.
 
+% Normalization 
+np = size(ii_ims, 1);
+mus = repmat(mean(ii_ims),np,1);
+stds = repmat(mean(ii_ims),np,1);
+ii_ims = (ii_ims - mus)./stds;
+
+% Loading of data
 inds = Cparams.Thetas(:,1);
 thetas = Cparams.Thetas(:,2);
 ps = Cparams.Thetas(:,3);
@@ -35,6 +42,7 @@ scs = zeros(1,ni);
 for i = 1:ni
     scs(i) = Cparams.alphas'*classify(fs(:,i), ps, thetas);
 end
+
 end
 
 function h = classify(fs, p, theta)

@@ -54,8 +54,6 @@ for t = 1:T
     
     % Train weak classifiers
     for f = 1:nfeat
-%         ftype = fmat(f,:);
-%         fs = ftype*ii_ims;
         [theta(f), p(f), errs(f)] = LearnWeakClassifier(ws, fs(f,:)', ys);
     end
     

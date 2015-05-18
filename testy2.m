@@ -1,24 +1,35 @@
+close all
+clear
+clc
 
-test_inds = setdiff(1:length(TData.ys), TData.train_inds);
-ys = TData.ys(test_inds);
-scs = ApplyDetector(Cparams,TData.ii_ims(:,test_inds));
-thresholds = -5:0.05:5;
+im_fname = 'TestImages/one_chris.png';
 
-% Each row in C corresponds to a threshold
-[S, T] = meshgrid(scs, thresholds);
-C = S > T;
-C = 2*C-1;
+% Load image
+im = double(imread(im_fname));
+
+% Convert to black and white if color
+if size(im,3) > 1
+    im = rgb2gray(im);
+end
+
+% Remove mean and standard deviation (if std not 0) (maybe remove)
+im_array = im(:);
+if std(im_array)
+    im = (im-mean(im_array))/std(im_array);
+else
+    fprintf('Warning: standard deviation = 0 for %s\n', im_fname)
+    im = im-mean(im_array);
+end
+
+sq_im = im.^2;
+
+% Calculate integral images
+ii_im = cumsum(cumsum(im),2);
+ii_sq_im = cumsum(cumsum(sq_im),2);
 
 
-
-pos_tot = sum(ys>0);
-neg_tot = sum(ys<0);
-
-YS = repmat(ys', size(C,1),1);
-ntp = sum((YS>0).*(C>0),2);
-nfp = sum((YS<0).*(C>0),2);
-
-tpr = ntp / pos_tot;
-fpr = nfp / neg_tot;
-
-plot(fpr,tpr)
+for x = 1:size(im, 2)
+    for y = 1:size(im, 1)
+        
+    end
+end
