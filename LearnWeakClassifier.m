@@ -17,14 +17,19 @@ function [theta, p, err] = LearnWeakClassifier(ws, fs, ys)
 %                       data.
 
 % Calculate weighted means
-mu_p = sum(ws.*fs.*(1+ys))/sum(ws.*(1+ys));
-mu_n = sum(ws.*fs.*(1-ys))/sum(ws.*(1-ys));
+a = (ws.*fs)';
+ws_t = ws';
+ys_p = 1+ys;
+ys_n = 1-ys;
+mu_p = (a*ys_p)/(ws_t*(ys_p));
+mu_n = (a*ys_n)/(ws_t*(ys_n));
 
 % Claculate threshold theta (middle of means)
 theta = (mu_p + mu_n)/2;
 
 % Calculate error
-err_n = sum(ws.*abs(ys - classify(fs, -1, theta)))/2;
+% err_n = sum(ws.*abs(ys - classify(fs, -1, theta)))/2;
+err_n = ws_t*abs(ys_p - classify(fs, -1, theta))/2;
 % err_p = sum(ws.*abs(ys - classify(fs, 1, theta)))/2
 
 % Assign parity to minimize error
@@ -43,6 +48,6 @@ function g = classify(fs, p, theta)
 % Classifies the images according to equation 8.
 
 g = p*fs < p*theta;
-g = g*2-1; % Make elements of g be either 1 or -1.
+g = g*2; % Make elements of g be either 1 or -1.
 
 end

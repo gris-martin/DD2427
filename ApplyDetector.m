@@ -1,4 +1,4 @@
-function scs = ApplyDetector(Cparams, ii_ims)
+function scs = ApplyDetector(Cparams, ii_ims, mus, sigmas)
 % scs = ApplyDetector(Cparams, ii_ims)
 % applies the strong classifier to a set of test images.
 % 
@@ -6,6 +6,10 @@ function scs = ApplyDetector(Cparams, ii_ims)
 % ii_ims    np x ni     Matrix where each column represents an integral
 %                       image. np is the number of pixels and ni is the
 %                       number of images.
+% sq_ii_ims np x ni     The integral image of the squared version of the
+%                       original image.
+% mus       1 x ni      Means of images
+% sigmas    1 x ni      Standard deviations of images
 % 
 % Input Cparams is a struct with the following fields:
 % Fields    Size/Type   Comment
@@ -20,24 +24,43 @@ function scs = ApplyDetector(Cparams, ii_ims)
 %                       where type is the feature type; x and y are 
 %                       starting position for the feature (upper left 
 %                       corner) and h and w denote the height and width.
-% 
+% §
 % Output    Size/Type   Comment
 % scs       ni x 1      Classification score for each image.
 
-% Normalization 
-np = size(ii_ims, 1);
-mus = repmat(mean(ii_ims),np,1);
-stds = repmat(mean(ii_ims),np,1);
-ii_ims = (ii_ims - mus)./stds;
+% Normalization
+% L_sq = L^2;
+% np = size(ii_ims, 1);
+% mus = repmat(mean(ii_ims),np,1);
+% stds = repmat(mean(ii_ims),np,1);
+% ii_ims = (ii_ims - mus)./stds;
 
-% Loading of data
+% Load data
 inds = Cparams.Thetas(:,1);
 thetas = Cparams.Thetas(:,2);
 ps = Cparams.Thetas(:,3);
 fmat = Cparams.fmat(inds,:);
-fs = fmat*ii_ims;
+all_ftypes = Cparams.all_ftypes(inds,:);
 
-ni = size(fs, 2);
+% Feature vector (nf x ni; i.e. each column corresponds to an image)
+fs = fmat*ii_ims;
+nf = size(fs,1);
+ni = size(fs,2);
+
+% Normalization (See Task IV)
+type3_inds = find(all_ftypes(:,1) == 3); % Store indices of third type
+type3_wh = all_ftypes(type3_inds,[4 5]); % Get width and heigth
+type3_wh = prod(type3_wh,2); % Multiply width and height
+type3_wh = repmat(type3_wh,1,ni); % Repeat for all images
+
+S = repmat(sigmas,nf,1); % Repeat sigmas for all features
+M = repmat(mus,numel(type3_inds),1); % Repeat mus for features of type 3
+
+fs = fs./S;
+S = S(type3_inds,:);
+fs(type3_inds,:) = fs(type3_inds,:)+type3_wh.*M./S;
+
+% Apply the strong classifier to calculate scores (to be thresholded)
 scs = zeros(1,ni);
 for i = 1:ni
     scs(i) = Cparams.alphas'*classify(fs(:,i), ps, thetas);
