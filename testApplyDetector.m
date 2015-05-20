@@ -22,5 +22,5 @@ L = size(im,1);
 mu = 1/L^2*ii_im(end,end);
 sigma = sqrt(1/(L^2-1)*(ii_sq_im(end,end) - L^2*mu^2));
 
-scs = ApplyDetector(Cparams, ii_im(:), mu, sigma);
+scs = ApplyDetector(Cparams, [ii_im(:), ii_im(:)], [mu mu], [sigma sigma]);
 

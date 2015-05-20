@@ -46,19 +46,20 @@ all_ftypes = Cparams.all_ftypes(inds,:);
 fs = fmat*ii_ims;
 nf = size(fs,1);
 ni = size(fs,2);
-
-% Normalization (See Task IV)
-type3_inds = find(all_ftypes(:,1) == 3); % Store indices of third type
-type3_wh = all_ftypes(type3_inds,[4 5]); % Get width and heigth
-type3_wh = prod(type3_wh,2); % Multiply width and height
-type3_wh = repmat(type3_wh,1,ni); % Repeat for all images
-
-S = repmat(sigmas,nf,1); % Repeat sigmas for all features
-M = repmat(mus,numel(type3_inds),1); % Repeat mus for features of type 3
-
-fs = fs./S;
-S = S(type3_inds,:);
-fs(type3_inds,:) = fs(type3_inds,:)+type3_wh.*M./S;
+if nargin > 2
+    % Normalization (See Task IV)
+    type3_inds = find(all_ftypes(:,1) == 3); % Store indices of third type
+    type3_wh = all_ftypes(type3_inds,[4 5]); % Get width and heigth
+    type3_wh = prod(type3_wh,2); % Multiply width and height
+    type3_wh = repmat(type3_wh,1,ni); % Repeat for all images
+    
+    S = repmat(sigmas,nf,1); % Repeat sigmas for all features
+    M = repmat(mus,numel(type3_inds),1); % Repeat mus for features of type 3
+    
+    fs = fs./S;
+    S = S(type3_inds,:);
+    fs(type3_inds,:) = fs(type3_inds,:)+type3_wh.*M./S;
+end
 
 % Apply the strong classifier to calculate scores (to be thresholded)
 scs = zeros(1,ni);
