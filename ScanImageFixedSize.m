@@ -51,12 +51,19 @@ size_x = size(im, 2) - L;
 size_y = size(im, 1) - L;
 
 % Initialization
-ii_ims = zeros(L^2,size_y); % Temporary storage of integral images
-mus = zeros(1,size_y); % Temporary storage of means
-sigmas = zeros(1,size_y); % Temporary storage of standard deviations
-scs = zeros(size_y,size_x); % Scores
+ii_ims = zeros(L^2,size_y*size_x); % Temporary storage of integral images
+mus = zeros(1,size_y*size_x); % Temporary storage of means
+sigmas = zeros(1,size_y*size_x); % Temporary storage of standard deviations
+
+if size_x < 3
+    disp('Scale too small (image patch larger than image)')
+    dets = [];
+    return;
+    
+end
 
 % Loop through all the possible image patches of the specified size
+iter = 1;
 for x = 2:(size_x+1)
     for y = 2:(size_y+1)
         % Last indices of current subpatch
@@ -79,21 +86,28 @@ for x = 2:(size_x+1)
             ii_sq_im(y-1, x-1);
 
         % Calculate mean and standard deviation (see task iv)
-        mus(y-1) = 1/L^2*ii_sum;
-        sigmas(y-1) = sqrt(1/(L^2-1)*...
-            (ii_sq_sum - L^2*mus(y-1)^2));
+%         mus(y-1) = 1/L^2*ii_sum;
+%         sigmas(y-1) = sqrt(1/(L^2-1)*...
+%             (ii_sq_sum - L^2*mus(y-1)^2));
+        mus(iter) = 1/L^2*ii_sum;
+        sigmas(iter) = sqrt(1/(L^2-1)*...
+            (ii_sq_sum - L^2*mus(iter)^2));
         
         % Store current image as an array 
         % (scan through one column at a time before applying detector)
-        ii_ims(:,y-1) = ii_temp(:);
+%         ii_ims(:,y-1) = ii_temp(:);
+        ii_ims(:,iter) = ii_temp(:);
+        iter = iter+1;
     end
     % Apply detector and store scores
-    scs(:,x) = ApplyDetector(Cparams, ii_ims, mus, sigmas);
+%     scs(:,x-1) = ApplyDetector(Cparams, ii_ims, mus, sigmas);
 end
-
+scs = ApplyDetector(Cparams, ii_ims, mus, sigmas);
 % Save parameters for subpatches where score is higher than threshold
-[row, col] = find(scs > Cparams.thresh);
-dets(:,1:2) = [col, row];
-dets(:,3:4) = 19;
+% [row, col] = find(scs > Cparams.thresh);
+ind = find(scs > Cparams.thresh)';
+dets(:,1:2) = [ceil(ind/size_y), mod(ind,size_y)];
+% dets(:,1:2) = [row, col];
+dets(:,3:4) = L;
 
 end

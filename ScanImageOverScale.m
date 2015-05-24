@@ -13,5 +13,7 @@ for s = min_s : step_s : max_s
     im_temp = imresize(im,s);
     dets_temp = ScanImageFixedSize(Cparams,im_temp);
     dets(iter:(iter+size(dets_temp,1)-1),1:4) = round(dets_temp/s);
-    iter = size(dets,1)+1;
+    iter = iter+size(dets_temp,1);
+    disp(['Scale ' num2str(s) ' done.'...
+        ' Found ' num2str(size(dets,1)) ' faces'])
 end

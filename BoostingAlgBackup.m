@@ -1,4 +1,4 @@
-function Cparams = BoostingAlgTest(TData, T, t_inds)
+function Cparams = BoostingAlg(TData, T, t_inds)
 % Cparams = BoostingAlg(Tdata, T)
 % implements the boosting algorithm AdaBoost, creating a strong classifier
 % from several weak ones.
@@ -29,7 +29,6 @@ if nargin < 3
 end
 
 ii_ims = TData.ii_ims(:,TData.train_inds);
-% fmat = sparse(TData.fmat(t_inds,:));
 fmat = TData.fmat(t_inds,:);
 ys = TData.ys(TData.train_inds);
 
@@ -41,38 +40,22 @@ w_p = (ys > 0)/(2*(n-m)); %Positive weights
 ws = w_n + w_p;
 
 nfeat = size(fmat, 1);
-% errs = zeros(nfeat, 1);
-% theta = zeros(nfeat, 1);
-% p = zeros(nfeat, 1);
+errs = zeros(nfeat, 1);
+theta = zeros(nfeat, 1);
+p = zeros(nfeat, 1);
 
 Thetas = zeros(T, 3);
 alphas = zeros(T, 1);
 
 fs = fmat*ii_ims;
 
-ys_p = 1+ys;
-ys_n = 1-ys;
 for t = 1:T
     ws = ws/sum(ws); % Normalization
-    ws_t = ws';
     
-    % Training of weak classifier, aka wall of matrix operations
-    % Translated from LearnWeakClassifier
-    A = fs.*repmat(ws_t,nfeat,1);
-    N_p = A*ys_p; % Positive nominator of equation 10, algorithm 2 
-    N_n = A*ys_n; % Negative nominator of equation 10, algorithm 2
-    D_p = ws_t*ys_p; % Positive denominator of equation 10, algorithm 2
-    D_n = ws_t*ys_n; % Negative denominator of equation 10, algorithm 2
-    Mu_p = N_p./D_p;
-    Mu_n = N_n./D_n;
-    theta = (Mu_p + Mu_n)/2;
-    G = fs > repmat(theta,1,n);
-    G = G'*2;
-    Err_n = (ws_t*abs(repmat(ys_p,1,nfeat) - G))/2;
-    p = Err_n > 0.5;
-    errs = p.*(1-Err_n);
-    errs = errs -(p-1).*Err_n;
-    p = p*2-1;
+    % Train weak classifiers
+    for f = 1:nfeat
+        [theta(f), p(f), errs(f)] = LearnWeakClassifier(ws, fs(f,:)', ys);
+    end
     
     % Coose weak classifiers with lowest error and store parameters
     [err, ind] = min(errs);
@@ -82,6 +65,7 @@ for t = 1:T
     % Update weights
     ws = ws.*exp(-alphas(t) * ys .* ...
         classify(Thetas(t,:), fmat(ind,:)*ii_ims));
+       
 end
 
 Cparams = struct('alphas', alphas, 'Thetas', Thetas,...

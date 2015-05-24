@@ -62,17 +62,22 @@ if nargin > 2
 end
 
 % Apply the strong classifier to calculate scores (to be thresholded)
-scs = zeros(1,ni);
-for i = 1:ni
-    scs(i) = Cparams.alphas'*classify(fs(:,i), ps, thetas);
+P = repmat(ps,1,ni);
+T = repmat(thetas,1,ni);
+H = P.*fs < P.*T;
+H = H*2-1;
+scs = Cparams.alphas'*H;
+% scs = zeros(1,ni);
+% for i = 1:ni
+%     scs(i) = Cparams.alphas'*classify(fs(:,i), ps, thetas);
+% end
+% 
 end
 
-end
-
-function h = classify(fs, p, theta)
-% Classifies the images according to equation 8.
-
-h = p.*fs < p.*theta;
-h = h*2-1; % Make elements of g be either 1 or -1.
-
-end
+% function h = classify(fs, p, theta)
+% % Classifies the images according to equation 8.
+% 
+% h = p.*fs < p.*theta;
+% h = h*2-1; % Make elements of g be either 1 or -1.
+% 
+% end
