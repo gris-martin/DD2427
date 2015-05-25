@@ -24,7 +24,7 @@ function scs = ApplyDetector(Cparams, ii_ims, mus, sigmas)
 %                       where type is the feature type; x and y are 
 %                       starting position for the feature (upper left 
 %                       corner) and h and w denote the height and width.
-% §
+%
 % Output    Size/Type   Comment
 % scs       ni x 1      Classification score for each image.
 

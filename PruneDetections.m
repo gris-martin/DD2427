@@ -4,7 +4,7 @@ function fdets = PruneDetections(dets,p)
 ndets = size(dets,1); % Number of detections
 % Matrix where D(i,j) is a measure of how much detection i and j overlap
 D = zeros(ndets); 
-% Loop over all detections (could be done more efficient by only computing
+% Loop over all detections (could be done more efficient by computing only
 % half the matrix, but this operation is very fast anyway)
 for i1 = 1:ndets
     d1 = dets(i1,:);
