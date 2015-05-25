@@ -52,6 +52,7 @@ fs = fmat*ii_ims;
 
 ys_p = 1+ys;
 ys_n = 1-ys;
+Ys_p = repmat(ys_p,1,nfeat);
 for t = 1:T
     ws = ws/sum(ws); % Normalization
     ws_t = ws';
@@ -68,7 +69,7 @@ for t = 1:T
     theta = (Mu_p + Mu_n)/2;
     G = fs > repmat(theta,1,n);
     G = G'*2;
-    Err_n = (ws_t*abs(repmat(ys_p,1,nfeat) - G))/2;
+    Err_n = (ws_t*abs(Ys_p - G))/2;
     p = Err_n > 0.5;
     errs = p.*(1-Err_n);
     errs = errs -(p-1).*Err_n;

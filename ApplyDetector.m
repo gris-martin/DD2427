@@ -29,11 +29,6 @@ function scs = ApplyDetector(Cparams, ii_ims, mus, sigmas)
 % scs       ni x 1      Classification score for each image.
 
 % Normalization
-% L_sq = L^2;
-% np = size(ii_ims, 1);
-% mus = repmat(mean(ii_ims),np,1);
-% stds = repmat(mean(ii_ims),np,1);
-% ii_ims = (ii_ims - mus)./stds;
 
 % Load data
 inds = Cparams.Thetas(:,1);
@@ -64,20 +59,7 @@ end
 % Apply the strong classifier to calculate scores (to be thresholded)
 P = repmat(ps,1,ni);
 T = repmat(thetas,1,ni);
-H = P.*fs < P.*T;
+H = P.*fs < P.*T; % Classification
 H = H*2-1;
 scs = Cparams.alphas'*H;
-% scs = zeros(1,ni);
-% for i = 1:ni
-%     scs(i) = Cparams.alphas'*classify(fs(:,i), ps, thetas);
-% end
-% 
 end
-
-% function h = classify(fs, p, theta)
-% % Classifies the images according to equation 8.
-% 
-% h = p.*fs < p.*theta;
-% h = h*2-1; % Make elements of g be either 1 or -1.
-% 
-% end

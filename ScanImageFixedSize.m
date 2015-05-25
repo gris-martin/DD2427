@@ -35,11 +35,6 @@ if nargin < 3
 end
 
 % Load image
-% im = imread(im_path);
-% if size(im, 2) > 1
-%    im = rgb2gray(im);
-% end
-% im = double(im);
 sq_im = im.^2; % Square of image
 
 % Calculate integral images
@@ -86,28 +81,22 @@ for x = 2:(size_x+1)
             ii_sq_im(y-1, x-1);
 
         % Calculate mean and standard deviation (see task iv)
-%         mus(y-1) = 1/L^2*ii_sum;
-%         sigmas(y-1) = sqrt(1/(L^2-1)*...
-%             (ii_sq_sum - L^2*mus(y-1)^2));
         mus(iter) = 1/L^2*ii_sum;
         sigmas(iter) = sqrt(1/(L^2-1)*...
             (ii_sq_sum - L^2*mus(iter)^2));
         
         % Store current image as an array 
-        % (scan through one column at a time before applying detector)
-%         ii_ims(:,y-1) = ii_temp(:);
         ii_ims(:,iter) = ii_temp(:);
         iter = iter+1;
     end
-    % Apply detector and store scores
-%     scs(:,x-1) = ApplyDetector(Cparams, ii_ims, mus, sigmas);
+
 end
+
+% Apply detector and store scores
 scs = ApplyDetector(Cparams, ii_ims, mus, sigmas);
 % Save parameters for subpatches where score is higher than threshold
-% [row, col] = find(scs > Cparams.thresh);
 ind = find(scs > Cparams.thresh)';
 dets(:,1:2) = [ceil(ind/size_y), mod(ind,size_y)];
-% dets(:,1:2) = [row, col];
 dets(:,3:4) = L;
 
 end

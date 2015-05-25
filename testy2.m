@@ -13,7 +13,7 @@ Cparams = BoostingAlg(TData, T);
 % sum(abs(dinfo7.alphas - Cparams.alphas)>eps)
 % sum(abs(dinfo7.Thetas(:)- Cparams.Thetas(:))>eps)
 save('classifier_parameters', '-struct', 'Cparams')
-%%
-Cparams2 = BoostingAlgTest(TData,T);
-sum(abs(dinfo7.alphas - Cparams2.alphas)>eps)
-sum(abs(dinfo7.Thetas(:)- Cparams2.Thetas(:))>eps)
+% %%
+% Cparams2 = BoostingAlgTest(TData,T);
+% sum(abs(dinfo7.alphas - Cparams2.alphas)>eps)
+% sum(abs(dinfo7.Thetas(:)- Cparams2.Thetas(:))>eps)
